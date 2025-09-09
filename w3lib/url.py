@@ -318,6 +318,8 @@ def url_query_cleaner(
 
     """
 
+    keep_fragments = bool(os.environ.get("SCRAPY_KEEP_FRAGMENTS", keep_fragments))
+
     if isinstance(parameterlist, (str, bytes)):
         parameterlist = [parameterlist]
     url, fragment = urldefrag(url)
@@ -594,6 +596,9 @@ def canonicalize_url(
     # UTF-8 can handle all Unicode characters,
     # so we should be covered regarding URL normalization,
     # if not for proper URL expected by remote website.
+
+    keep_fragments = bool(os.environ.get("SCRAPY_KEEP_FRAGMENTS", keep_fragments))
+
     if isinstance(url, str):
         url = _strip(url)
     try:
