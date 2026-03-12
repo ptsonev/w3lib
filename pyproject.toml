@@ -51,7 +51,7 @@ include = [
 ]
 
 [tool.bumpversion]
-current_version = "2.3.1"
+current_version = "2.4.0"
 commit = true
 tag = true
 tag_name = "v{new_version}"
@@ -61,6 +61,12 @@ filename = "w3lib/__init__.py"
 
 [[tool.bumpversion.files]]
 filename = "docs/conf.py"
+
+[[tool.bumpversion.files]]
+filename = "NEWS"
+search = "\\(unreleased\\)$"
+replace = "({now:%Y-%m-%d})"
+regex = true
 
 [tool.coverage.run]
 branch = true

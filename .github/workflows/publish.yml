@@ -4,33 +4,28 @@ name: Publish
 on:
     push:
         tags:
-            - v*
+            - v[0-9]+.[0-9]+.[0-9]+
 
 jobs:
     publish:
         runs-on: ubuntu-latest
-
+        environment:
+            name: pypi
+            url: https://pypi.org/p/w3lib
+        permissions:
+            id-token: write
         steps:
-            - uses: actions/checkout@v5
+            - uses: actions/checkout@v6
 
-            - name: Set up Python 3.14
+            - name: Set up Python
               uses: actions/setup-python@v6
               with:
                   python-version: '3.14'
 
-            - name: Check Tag
-              id: check-release-tag
+            - name: Build
               run: |
-                  RE="^refs/tags/v[0-9]+[.][0-9]+[.][0-9]+(rc[0-9]+|[.]dev[0-9]+)?$"
-                  if [[ ${{ github.event.ref }} =~ $RE ]]; then
-                    echo ::set-output name=release_tag::true
-                  fi
+                  python -m pip install --upgrade build
+                  python -m build
 
             - name: Publish to PyPI
-              if: steps.check-release-tag.outputs.release_tag == 'true'
-              run: |
-                  pip install --upgrade build twine
-                  python -m build
-                  export TWINE_USERNAME=__token__
-                  export TWINE_PASSWORD=${{ secrets.PYPI_TOKEN }}
-                  twine upload dist/*
+              uses: pypa/gh-action-pypi-publish@release/v1
